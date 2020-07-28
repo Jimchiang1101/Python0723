@@ -4,6 +4,17 @@ from math import radians, cos, sin, asin, sqrt
 # 桃園市民權路6號
 # 24.990042, 121.311989
 
+def printYoubikeBySbiAmount(amount, youbikes):
+    rows = []
+    for youbike in youbikes:
+        if (int(youbike.get('sbi')) >= amount):
+            rows.append(youbike)
+
+    print(rows)
+
+
+
+
 def printYoubikesByDistance(m, youbikes):
     for youbike in youbikes:
         if youbike.get('distance') <= m:
@@ -54,3 +65,5 @@ if __name__ == '__main__':
     print(youbikes)
 
     printYoubikesByDistance(500, youbikes)
+
+    printYoubikeBySbiAmount(20, youbikes)

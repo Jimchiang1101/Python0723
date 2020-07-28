@@ -1,5 +1,18 @@
 import requests
 import json
+from math import radians, cos, sin, asin, sqrt
+# 桃園市民權路6號
+# 24.990042, 121.311989
+
+def printYoubikesByDistance(m, youbikes):
+    for youbike in youbikes:
+        if youbike.get('distance') <= m:
+            print(youbike.get('sna'), youbike.get('distance'))
+
+def appendDistance(lat, lng, youbikes):
+    for youboke in youbikes:
+        d = haversine(lat, lng, float(youboke.get("lat")), float(youboke.get("lng")))
+        youboke.setdefault("distance", d)
 
 def getYoubikes() -> list:
     limit = 500
@@ -19,7 +32,25 @@ def getYoubikeByName(sna, youbikes=None) -> dict:
         if str(youbike.get('sna')).__contains__(sna):
             return youbike
 
+# 透過經緯度計算距離的方法
+def haversine(lon1, lat1, lon2, lat2) -> int: # 經度1，緯度1，經度2，緯度2）
+    # 轉弧度
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    # 半正矢 haversine 公式
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a))
+    r = 6371 # 地球平均半徑(公里)
+    return c * r * 1000 # 單位公尺
+
 if __name__ == '__main__':
     youbikes = getYoubikes()
-    youbike = getYoubikeByName('桃園火車站(前站)', youbikes)
-    print(youbike)
+    youboke = getYoubikeByName('桃園火車站(前站)', youbikes)
+    d = haversine(24.990042, 121.311989, float(youboke.get("lat")), float(youboke.get("lng")))
+    print(d, "公尺", youboke)
+    # 加入距離資訊
+    appendDistance(24.990042, 121.311989, youbikes)
+    print(youbikes)
+
+    printYoubikesByDistance(500, youbikes)
